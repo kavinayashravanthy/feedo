@@ -1,15 +1,4 @@
-"""
-Professional Feedback Processor API
 
-A comprehensive FastAPI application for analyzing customer feedback with:
-- Sentiment analysis using DistilBERT
-- Sector classification with enhanced keyword matching
-- NPS (Net Promoter Score) extraction and classification
-- Detailed analytics and reporting capabilities
-
-Author: Your Organization
-Version: 1.0.0
-"""
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -606,4 +595,5 @@ API FEATURES:
 - Individual feedback retrieval
 - Overall NPS score calculation
 - Professional error handling and validation
+
 """
