@@ -1,0 +1,10 @@
+/* style.css */
+body { font-family: Arial, sans-serif; background:#f6f7fb; margin:0; padding:20px; }
+.container { max-width:1000px; margin:0 auto; background:white; padding:20px; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.06); }
+form { display:flex; gap:10px; align-items:center; }
+table { width:100%; border-collapse:collapse; margin-top:20px; }
+th, td { padding:10px; border-bottom:1px solid #eee; text-align:left; vertical-align:top; }
+.sentiment-positive { background:#e6f7ea; color:#1b6f3a; padding:6px 8px; border-radius:6px; font-weight:600; }
+.sentiment-negative { background:#ffdede; color:#9d1b2f; padding:6px 8px; border-radius:6px; font-weight:600; }
+.sentiment-neutral { background:#fff4d6; color:#795548; padding:6px 8px; border-radius:6px; font-weight:600; }
+.emotion-badge { padding:6px 8px; border-radius:6px; display:inline-block; font-weight:600; }

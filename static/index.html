@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback Analyzer</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; }
+    .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+    h1 { text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-top: 2em; }
+    th, td { border: 1px solid #ddd; padding: 0.5em; text-align: left; }
+    th { background: #f0f0f0; }
+    tr:nth-child(even) { background: #fafafa; }
+    .error { color: red; margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Upload Feedback CSV</h1>
+    <form id="uploadForm">
+      <input type="file" id="fileInput" name="file" accept=".csv" required />
+      <button type="submit">Upload & Analyze</button>
+    </form>
+    <div id="error" class="error"></div>
+    <h2>Analysis Results</h2>
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th>Feedback</th>
+          <th>Score</th>
+          <th>Sentiment</th>
+          <th>Emotion</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script>
+    const form = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
+    const errorDiv = document.getElementById('error');
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      errorDiv.textContent = "";
+      resultsTable.innerHTML = "";
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/analyze-csv/', {
+          method: 'POST',
+          body: formData
+        });
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.detail || "Upload failed");
+        }
+        const data = await response.json();
+        if (!data.results || !data.results.length) {
+          errorDiv.textContent = "No results found.";
+          return;
+        }
+        data.results.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.feedback}</td>
+            <td>${row.score}</td>
+            <td>${row.sentiment}</td>
+            <td>${row.emotion}</td>
+          `;
+          resultsTable.appendChild(tr);
+        });
+      } catch (err) {
+        errorDiv.textContent = err.message || "An error occurred.";
+      }
+    };
+  </script>
+</body>
+</html>
