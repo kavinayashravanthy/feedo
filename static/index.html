@@ -13,6 +13,7 @@
     th { background: #f0f0f0; }
     tr:nth-child(even) { background: #fafafa; }
     .error { color: red; margin-top: 1em; }
+    .summary { margin-top: 2em; background: #f0f8ff; padding: 1em; border-radius: 6px; }
   </style>
 </head>
 <body>
@@ -23,6 +24,7 @@
       <button type="submit">Upload & Analyze</button>
     </form>
     <div id="error" class="error"></div>
+    <div id="summary" class="summary"></div>
     <h2>Analysis Results</h2>
     <table id="resultsTable">
       <thead>
@@ -31,6 +33,7 @@
           <th>Score</th>
           <th>Sentiment</th>
           <th>Emotion</th>
+          <th>Sector</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -41,11 +44,13 @@
     const fileInput = document.getElementById('fileInput');
     const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
     const errorDiv = document.getElementById('error');
+    const summaryDiv = document.getElementById('summary');
 
     form.onsubmit = async (e) => {
       e.preventDefault();
       errorDiv.textContent = "";
       resultsTable.innerHTML = "";
+      summaryDiv.innerHTML = "";
       const file = fileInput.files[0];
       if (!file) return;
 
@@ -66,6 +71,16 @@
           errorDiv.textContent = "No results found.";
           return;
         }
+        // Show summary
+        summaryDiv.innerHTML = `
+          <b>Net Promoter Score (NPS):</b> ${data.nps}<br>
+          <b>Sector with lowest average score:</b> ${data.sector_least}<br>
+          <b>Average Scores by Sector:</b>
+          <ul>
+            ${Object.entries(data.sector_scores).map(([sector, score]) => `<li>${sector}: ${score}</li>`).join('')}
+          </ul>
+        `;
+        // Show table
         data.results.forEach(row => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
@@ -73,6 +88,7 @@
             <td>${row.score}</td>
             <td>${row.sentiment}</td>
             <td>${row.emotion}</td>
+            <td>${row.sector}</td>
           `;
           resultsTable.appendChild(tr);
         });
